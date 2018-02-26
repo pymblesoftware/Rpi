@@ -1,0 +1,11 @@
+
+
+Reset Bluetooth Adaptor
+
+sudo hciconfig hci0 reset
+
+
+
+
+
+
