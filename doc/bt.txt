@@ -5,7 +5,87 @@ Reset Bluetooth Adaptor
 sudo hciconfig hci0 reset
 
 
+Bluetooth Commands
+/Pi Operating Systems / Raspbian - Recommended OS / Bluetooth / Bluetooth Commands
+Adam
+In these notes "xx:xx:xx:xx:xx:xx" means the MAC address of the remote bluetooth device
+
+Reset Bluetooth Adaptor
+
+sudo hciconfig hci0 reset
+Restart Bluetooth Service
+
+sudo invoke-rc.d bluetooth restart
+List Bluetooth Adaptors
+
+hciconfig
+Scan for Bluetooth devices
+
+hcitool scan
+To then connect to one of the found devices  you can use this:
 
 
+sudo bluez-simple-agent hci0 xx:xx:xx:xx:xx:xx
+Make The Raspberry Pi Discoverable
+
+sudo hciconfig hci0 piscan
+You will now be able to search and find the RPi from other devices such as windows "Add A Device" (development tip – if you've previously connected you'll need to remove it from Windows Devices for it to be able to found it again by Add A Device)
+
+To allow the connection to complete you need to also do the following step to allow a remote device to actually connect:
+
+
+sudo bluetooth-agent 1234
+1234 is the pairing code for it to use, but this will can be automatically overridden by a randomly selected code displayed on both devices
+
+Discover Bluetooth Devices
+
+hcitool scan
+List Previously Paired Devices
+
+bluez-test-device list
+(This will appear to do nothing if there are no devices).
+
+Remove Previously Paired Device
+You will need to get the devices MAC address by using the List command
+
+If you need to disconnect it first:
+
+
+bluez-test-device disconnect xx:xx:xx:xx:xx:xx
+Then
+
+
+bluez-test-device remove xx:xx:xx:xx:xx:xx
+Ping Device
+
+sudo l2ping -c 1 xx:xx:xx:xx:xx:xx
+
+
+
+
+
+Once you have your RPi paired with another device you have a Bluetooth link, but you still need to set up another protocol over the Bluetooth called "RFCOMM" to provide an emulated serial connection between the two devices.
+
+Setting The RPi to create a serial connection to a Bluetooth device at startup
+Enter the command:
+
+
+sudo nano /etc/bluetooth/rfcomm.conf
+Add the connection details:
+
+
+rfcomm1 {
+    # Automatically bind the device at startup
+    bind yes;
+
+   # Bluetooth address of the device
+    device xx:xx:xx:xx:xx:xx;
+
+    # RFCOMM channel for the connection
+    channel 1;
+
+    # Description of the connection
+    comment "My Bluetooth Connection";
+}
 
 
